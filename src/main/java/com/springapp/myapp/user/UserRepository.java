@@ -15,17 +15,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     @EntityGraph(attributePaths = {"addresses"})
-    @Query("select u from user u")
+    @Query("select u from User u")
     List<User> getAllWithAddresses();
 
     @Procedure("findUsersWithLoyaltyPointGreaterThan")
     List<UserSummaryDto>
     getUsersSummaryWithLoyaltyPointsGreaterThan(Integer LoyaltyPoint);
 
-    @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > :loyaltyPoints order by u.email")
-    List<UserSummaryDto> getLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
+    // @EntityGraph(attributePaths = {"profile"})
+    // @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > :loyaltyPoints order by u.email")
+    // List<UserSummaryDto> getLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
 
-    void deleteBId(Long id);
+    void deleteById(Long id);
 
     boolean existsUserByEmail(String email);
 
