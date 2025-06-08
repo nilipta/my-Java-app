@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
     // with @Component annotation on each SecurityRules classes, Spring will scan and register them automatically and add them in this list.
+    private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private List<SecurityRules> securityRules;
@@ -42,7 +44,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         var provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder( passwordEncoder() );
-        // provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userDetailsService);
         return provider;
     }
     @Bean
