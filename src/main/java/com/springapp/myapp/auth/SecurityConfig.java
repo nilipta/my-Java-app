@@ -60,28 +60,18 @@ public class SecurityConfig {
         http.sessionManagement(c-> c.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS
         )).csrf(AbstractHttpConfigurer::disable)
+        .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // <-- Add this line
         .authorizeHttpRequests(c -> {
             securityRules.forEach(securityRules -> securityRules.configure(c));
             c.anyRequest().authenticated();
         })
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(c -> {
-            // make sure all auth entry points get 401 - unauthorized, which means the user is not authenticated or credentials are invalid.
             c.authenticationEntryPoint(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-            // when it is for role-based authenticated, but the user has no permission to access the resource.
             c.accessDeniedHandler(((request, response, accessDeniedException) ->
                     response.setStatus(HttpStatus.FORBIDDEN.value())));
         });
-        // .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        //         .exceptionHandling(c -> {
-        //             // make sure all auth entry points get 401 - unauthorized, which means the user is not authenticated or credentials are invalid.
-        //             c.authenticationEntryPoint(
-        //                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-        //             // when it is for role-based authenticated, but the user has no permission to access the resource.
-        //             c.accessDeniedHandler(((request, response, accessDeniedException) ->
-        //                     response.setStatus(HttpStatus.FORBIDDEN.value())));
-        //         });
         return http.build();
     }
     

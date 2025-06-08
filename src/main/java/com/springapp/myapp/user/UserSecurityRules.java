@@ -11,7 +11,9 @@ import com.springapp.myapp.common.SecurityRules;
 public class UserSecurityRules implements SecurityRules {
     @Override
     public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        registry.requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+        registry
+            .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+            .requestMatchers("/h2-console/**").permitAll() // <-- Add this line
             .requestMatchers(HttpMethod.GET, "/api/users").hasRole(Role.ADMIN.name());
     }
 
